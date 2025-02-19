@@ -20,6 +20,16 @@ CODEC = [
 ]
 CODEC_SET = set(CODEC)
 
+BITRATE = [
+    "320k",
+    "256k",
+    "192k",
+    "128k",
+    "96k",
+    "64k",
+]
+BITRATE_SET = set(BITRATE)
+
 
 class Logger(object):
     def success(self, message: str):
@@ -133,6 +143,13 @@ def cli(context: click.Context, verbose: bool):
     help="Codec to covert to",
 )
 @click.option(
+    "--bitrate",
+    "-b",
+    type=click.Choice(BITRATE),
+    default="192k",
+    help="Bitrate to covert to",
+)
+@click.option(
     "--workers", "-w", type=int, default=5, help="Number of worker processes to run"
 )
 @click.pass_obj
@@ -141,6 +158,7 @@ def convert(
     input_directory: str,
     output_directory: str,
     output_format: str,
+    output_bitrate: str,
     codec: Optional[str],
     workers: int,
 ):
@@ -168,6 +186,7 @@ def convert(
     audio_files = [
         ConversionJob(
             output_format=output_format,
+            output_bitrate=output_bitrate,
             codec=codec,
             verbose=config.verbose,
             output_path=output_path,
@@ -211,6 +230,7 @@ def converter(conversion_job: ConversionJob):
 
     # Conversion specific data
     output_format = conversion_job.output_format[1:]  # ignore "." prefix
+    output_bitrate = conversion_job.output_bitrate
     output_path = conversion_job.output_path
     verbose_flag = conversion_job.verbose
     codec = conversion_job.codec
@@ -230,7 +250,7 @@ def converter(conversion_job: ConversionJob):
     audio.export(
         output_name.as_posix(),
         format=output_format,
-        bitrate="192k",
+        bitrate=output_bitrate,
         codec=codec,
         parameters=parameters,
     )
