@@ -85,6 +85,7 @@ class ConversionJob(object):
 
     __slots__ = [
         "output_format",
+        "output_bitrate",
         "codec",
         "verbose",
         "output_path",
@@ -95,6 +96,7 @@ class ConversionJob(object):
     def __init__(
         self,
         output_format: str,
+        output_bitrate: str,
         codec: Optional[str],
         verbose: bool,
         output_path: pathlib.Path,
@@ -102,6 +104,7 @@ class ConversionJob(object):
         logger: Optional[Logger] = None,
     ):
         self.output_format = output_format
+        self.output_bitrate = output_bitrate
         self.codec = codec
         self.verbose = verbose
         self.output_path = output_path
@@ -136,18 +139,18 @@ def cli(context: click.Context, verbose: bool):
     help="Target output format",
 )
 @click.option(
+    "--output-bitrate",
+    "-b",
+    type=click.Choice(BITRATE),
+    default="192k",
+    help="Bitrate to covert to",
+)
+@click.option(
     "--codec",
     "-c",
     type=click.Choice(CODEC),
     default=None,
     help="Codec to covert to",
-)
-@click.option(
-    "--bitrate",
-    "-b",
-    type=click.Choice(BITRATE),
-    default="192k",
-    help="Bitrate to covert to",
 )
 @click.option(
     "--workers", "-w", type=int, default=5, help="Number of worker processes to run"
