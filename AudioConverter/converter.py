@@ -246,9 +246,14 @@ def converter(conversion_job: ConversionJob):
     logger.verbose(
         "Converting {} to {}".format(audio_name, output_format), verbose_flag
     )
+    
     audio = AudioSegment.from_file(audio_file.as_posix(), audio_file.suffix[1:])
     output_name = output_path.joinpath(converted_name)
     parameters = get_parameters(output_format, codec)
+
+    logger.verbose(
+        "FilePath from:{} to {}".format(audio_file, output_name), verbose_flag
+    )
 
     audio.export(
         output_name.as_posix(),
